@@ -50,8 +50,7 @@ export function validateApplication(application: IApplication) {
     address: Joi.string().required(),
     phone: Joi.string(),
     description: Joi.string(),
-    takenProgram: Joi.boolean().default(false),
-    takenSchool: Joi.string().default(false),
+    stage: Joi.string(),
     notis: Joi.string(),
   });
   return Schema.validate(application);
