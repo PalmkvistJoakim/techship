@@ -6,6 +6,7 @@ import application from "./routes/application";
 import user from "./routes/user";
 import auth from "./routes/auth";
 import nodemail from "./routes/nodemail";
+import videoask from "./routes/videoAsk";
 const app = express();
 const Port = 5000;
 
@@ -16,6 +17,7 @@ app.use("/api/application", application);
 app.use("/api/users", user);
 app.use("/api/auth", auth);
 app.use("/api/sendemail", nodemail);
+app.use("/api/videoask", videoask);
 
 mongoose
   .connect("mongodb://localhost/techship")
