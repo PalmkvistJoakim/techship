@@ -16,23 +16,14 @@ router.post("/", async (req, res) => {
   if (error) return res.status(400).send(error.message);
 
   const application = {
-    imgae: req.body.image,
     notis: req.body.notis,
-    name: req.body.name,
-    email: req.body.email,
-    age: req.body.age,
-    address: req.body.address,
-    phone: req.body.phone,
     stage: req.body.stage,
-    description: req.body.description,
   };
 
   const newapplication = new Application(application);
   await newapplication.save();
 
-  return res
-    .status(201)
-    .send(`Tack för ansökan ${application.name}, vi återkommer.`);
+  return res.status(201).send(newapplication);
 });
 
 router.put("/:id", async (req, res) => {
