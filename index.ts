@@ -1,3 +1,5 @@
+require("express-async-errors");
+import error from "./middleware/error";
 import express from "express";
 import mongoose from "mongoose";
 import cors from "cors";
@@ -18,6 +20,7 @@ app.use("/api/users", user);
 app.use("/api/auth", auth);
 app.use("/api/sendemail", nodemail);
 app.use("/api/videoask", videoask);
+app.use(error);
 
 mongoose
   .connect("mongodb://localhost/techship")
