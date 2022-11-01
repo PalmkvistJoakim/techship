@@ -1,47 +1,31 @@
 import express from "express";
 import axios from "axios";
-import qs from "qs";
+import { Request, Response } from "express";
 const router = express.Router();
 
-router.get("/", async (req, res) => {
-  const response = await axios({
-    method: "get",
-    url: "https://api.videoask.com/forms/5625efd6-e7e9-4b5c-ac78-f2a7b429e79c/contacts?limit=200&offset=0",
-    headers: {
-      Authorization: process.env.AUTHORIZATION,
-      "organization-id": process.env.ORGANIZATIONID,
-    },
-  });
-  // const data = { ...response.data };
-  try {
-    res.status(200).send(response.data);
-  } catch (err) {
-    res.status(500).send({ message: err });
-  }
+router.get("/auth", (req, res) => {
+  res.redirect(
+    `https://auth.videoask.com/authorize?response_type=code&audience=https://api.videoask.it/&client_id=${process.env.CLIENT_ID}&scope=${process.env.SCOPE}&redirect_uri=${process.env.APP_URL}`
+  );
 });
 
-/.den route måste fixas för att posta en access token som gäller för 24h/;
-
-router.get("/token", async (req, res) => {
-  const data = qs.stringify({
-    grant_type: "authorization_code",
-    code: process.env.AUTHORIZATION,
+router.get("/oauth-callback", async (req: Request | any, res: Response) => {
+  let parameters = new URLSearchParams(req.query);
+  const Code = parameters.get("code");
+  const body = {
+    grant_type: process.env.GRANT_TYPE,
+    code: Code,
     client_id: process.env.CLIENT_ID,
     client_secret: process.env.CLIENT_SECRET,
-    redirect_url: "http://localhost:5000/videoask",
-  });
-
-  const response = await axios({
-    method: "post",
-    url: "https://auth.videoask.com/oauth/token",
-    headers: {},
-    data: data,
-  });
-  try {
-    res.status(200).send(response.data);
-  } catch (err) {
-    res.status(500).send({ message: err });
-  }
+    redirect_uri: process.env.APP_URL,
+  };
+  const opts = { headers: { accept: "application/json" } };
+  await axios
+    .post("https://auth.videoask.com/oauth/token", body, opts)
+    .then((res) => res.data.access_token)
+    .then((token) => {
+      res.redirect(`http://localhost:3000/?home=${token}`);
+    });
 });
 
 export default router;
