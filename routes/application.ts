@@ -16,7 +16,8 @@ router.post("/", async (req, res) => {
   if (error) return res.status(400).send(error.message);
 
   const application = {
-    notis: req.body.notis,
+    contact_id: req.body.contact_id,
+    kommentar: req.body.kommentar,
     stage: req.body.stage,
   };
 

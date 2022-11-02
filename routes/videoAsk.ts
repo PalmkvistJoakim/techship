@@ -25,6 +25,39 @@ router.get("/oauth-callback", async (req: Request | any, res: Response) => {
     .then((res) => res.data.access_token)
     .then((token) => {
       res.redirect(`http://localhost:3000/?home=${token}`);
+      console.log(token);
+    });
+});
+
+router.post("/form", async (req, res) => {
+  const data = JSON.stringify({
+    title: `${req.body.title}`,
+    show_contact_name: true,
+    show_contact_email: true,
+    show_contact_phone_number: true,
+    show_consent: false,
+    requires_contact_name: false,
+    requires_contact_email: false,
+    requires_contact_phone_number: false,
+    requires_consent: false,
+  });
+
+  var config = {
+    method: "post",
+    url: "https://api.videoask.com/forms",
+    headers: {
+      Authorization: `${req.body.token}`,
+      "Content-Type": "application/json",
+      "organization-id": process.env.ORGANIZATIONID,
+    },
+    data: data,
+  };
+  axios(config)
+    .then(function (response) {
+      console.log(JSON.stringify(response.data));
+    })
+    .catch(function (error) {
+      console.log(error);
     });
 });
 
