@@ -6,8 +6,10 @@ router.get("/", async (req, res) => {
   const application = await Application.find();
   return res.status(200).send(application);
 });
-router.get("/:id", async (req, res) => {
-  const application = await Application.findById(req.params.id);
+router.get("/comment", async (req, res) => {
+  const application = await Application.findOne({
+    contact_id: req.body.contact_id,
+  });
   return res.status(200).send(application);
 });
 
