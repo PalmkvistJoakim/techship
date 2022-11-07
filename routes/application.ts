@@ -33,7 +33,13 @@ router.put("/:id", async (req, res) => {
   const applicationId = await Application.findById(req.params.id);
   if (!applicationId) return res.status(400).send("Ansökan hittades ej.");
 
-  await Application.findByIdAndUpdate(req.params.id, req.body);
+  await Application.findByIdAndUpdate(
+    req.params.id,
+    {
+      kommentar: req.body.kommentar,
+      stage: req.body.stage,
+    } || req.body
+  );
 
   return res.send(req.body);
 });
