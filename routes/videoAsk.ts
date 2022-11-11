@@ -28,43 +28,31 @@ router.get("/oauth-callback", async (req: Request | any, res: Response) => {
     });
 });
 
-router.post("/form", async (req, res) => {
-  const data = JSON.stringify({
-    title: `${req.body.title}`,
-    show_contact_name: true,
-    show_contact_email: true,
-    show_contact_phone_number: true,
-    show_consent: false,
-    requires_contact_name: false,
-    requires_contact_email: false,
-    requires_contact_phone_number: false,
-    requires_consent: false,
-  });
-
-  var config = {
-    method: "post",
+router.get("/form", async (req, res) => {
+  const tokenId = req.query.token;
+  const config = {
+    method: "GET",
     url: "https://api.videoask.com/forms",
     headers: {
-      Authorization: `${req.body.token}`,
-      "Content-Type": "application/json",
+      Authorization: `${tokenId}`,
       "organization-id": process.env.ORGANIZATIONID,
     },
-    data: data,
   };
   axios(config)
     .then(function (response) {
-      console.log(JSON.stringify(response.data));
+      res.send(response.data.results);
     })
     .catch(function (error) {
       console.log(error);
     });
 });
 
-router.get("/form", async (req, res) => {
+router.get("/profile", (req, res) => {
   const tokenId = req.query.token;
+  const respondentId = req.query.respondentId;
   const config = {
-    method: "GET",
-    url: "https://api.videoask.com/forms",
+    method: "delete",
+    url: `https://api.videoask.com/respondents/${respondentId}`,
     headers: {
       Authorization: `${tokenId}`,
       "organization-id": process.env.ORGANIZATIONID,
