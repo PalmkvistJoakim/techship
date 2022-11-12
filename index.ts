@@ -7,6 +7,7 @@ import dotenv from "dotenv";
 import application from "./routes/application";
 import nodemail from "./routes/nodemail";
 import videoask from "./routes/videoAsk";
+import category from "./routes/category";
 const app = express();
 const Port = 5000;
 
@@ -14,6 +15,7 @@ dotenv.config();
 app.use(cors());
 app.use(express.json());
 app.use("/api/application", application);
+app.use("/api/category", category);
 app.use("/api/sendemail", nodemail);
 app.use("/api/videoask", videoask);
 app.use(error);

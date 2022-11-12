@@ -1,6 +1,7 @@
 import express from "express";
 const router = express.Router();
 import { Application, validateApplication } from "models/Application";
+import { Category } from "../models/Category";
 
 router.get("/", async (req, res) => {
   const application = await Application.find();
@@ -17,10 +18,13 @@ router.post("/", async (req, res) => {
   const { error } = validateApplication(req.body);
   if (error) return res.status(400).send(error.message);
 
+  const categoryId = await Category.findById(req.body.categoryId);
+  if (!categoryId) return res.status(400).send("kunde inte hitta Stage.");
+
   const application = {
     contact_id: req.body.contact_id,
     kommentar: req.body.kommentar,
-    stage: req.body.stage,
+    categoryId: { _id: categoryId._id, name: categoryId.name },
   };
 
   const newapplication = new Application(application);
@@ -33,11 +37,14 @@ router.put("/:id", async (req, res) => {
   const applicationId = await Application.findById(req.params.id);
   if (!applicationId) return res.status(400).send("Ansökan hittades ej.");
 
+  const categoryId = await Category.findById(req.body.categoryId);
+  if (!categoryId) return res.status(400).send("kunde inte hitta Stage.");
+
   await Application.findByIdAndUpdate(
     req.params.id,
     {
       kommentar: req.body.kommentar,
-      stage: req.body.stage,
+      categoryId: { _id: categoryId._id, name: categoryId.name },
     } || req.body
   );
 
