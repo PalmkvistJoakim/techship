@@ -1,24 +1,19 @@
 import mongoose from "mongoose";
 import Joi from "joi";
 import { Schema, Model } from "mongoose";
+import { categoySchema } from "./Category";
 
 interface IApplication {
   contact_id: string;
   kommentar: object;
-  stage: Stage;
+  categoryId: typeof categoySchema;
 }
-
-type Stage = "APPLIED" | "TECHSHIP_SCHOOL" | "TECHSHIP_PROGRAMME";
 
 export const applicationSchema: Schema<IApplication> = new mongoose.Schema(
   {
     contact_id: { type: String },
     kommentar: { type: String },
-    stage: {
-      type: String,
-      enum: ["APPLIED", "TECHSHIP_SCHOOL", "TECHSHIP_PROGRAMME"],
-      default: "APPLIED",
-    },
+    categoryId: categoySchema,
   },
   { timestamps: true }
 );
@@ -32,7 +27,7 @@ export function validateApplication(application: IApplication) {
   const Schema = Joi.object({
     contact_id: Joi.string(),
     kommentar: Joi.string(),
-    stage: Joi.string(),
+    categoryId: Joi.string(),
   });
   return Schema.validate(application);
 }
