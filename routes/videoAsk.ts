@@ -24,7 +24,7 @@ router.get("/oauth-callback", async (req: Request | any, res: Response) => {
     .post("https://auth.videoask.com/oauth/token", body, opts)
     .then((res) => res.data.access_token)
     .then((token) => {
-      res.redirect(`http://localhost:3000/?home=${token}`);
+      res.redirect(`http://localhost:3000/dashboard?home=${token}`);
     });
 });
 
@@ -34,7 +34,7 @@ router.get("/form", async (req, res) => {
     method: "GET",
     url: "https://api.videoask.com/forms",
     headers: {
-      Authorization: `${tokenId}`,
+      Authorization: `Bearer ${tokenId}`,
       "organization-id": process.env.ORGANIZATIONID,
     },
   };
@@ -54,7 +54,7 @@ router.get("/profile", (req, res) => {
     method: "delete",
     url: `https://api.videoask.com/respondents/${respondentId}`,
     headers: {
-      Authorization: `${tokenId}`,
+      Authorization: `Bearer ${tokenId}`,
       "organization-id": process.env.ORGANIZATIONID,
     },
   };
