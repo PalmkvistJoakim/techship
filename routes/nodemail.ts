@@ -4,9 +4,11 @@ import nodemailer from "nodemailer";
 
 interface ISend {
   email: string;
+  subject: string;
+  message: string;
 }
 
-const sendEmail = async ({ email }: ISend) => {
+const sendEmail = async ({ email, subject, message }: ISend) => {
   const transporter = nodemailer.createTransport({
     host: "mail.privateemail.com",
     port: 465, //587
@@ -28,11 +30,9 @@ const sendEmail = async ({ email }: ISend) => {
   const options = {
     from: process.env.EMAIL_USER,
     to: email,
-    subject: "Testing ",
+    subject: subject,
     html: `
-    <h3> Hello from nodemail </h3>
-    <p> Test from node coding </p>
-    <p> Regard Janken </p>
+    <p> ${message} </p>
     `,
   };
 
@@ -48,8 +48,8 @@ const sendEmail = async ({ email }: ISend) => {
 
 router.post("/", async (req, res) => {
   try {
-    const email = req.body.email;
-    await sendEmail({ email });
+    const { email, message, subject } = req.body;
+    await sendEmail({ email, message, subject });
     res.status(200).send(res.statusMessage);
   } catch (error) {
     res.status(500).send("Server error!");
