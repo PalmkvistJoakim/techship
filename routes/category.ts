@@ -20,4 +20,10 @@ router.post("/", async (req, res) => {
   res.send(newCategory);
 });
 
+router.delete("/:id", async (req, res) => {
+  const category = await Category.findByIdAndDelete(req.params.id);
+
+  res.send(category);
+});
+
 export default router;
