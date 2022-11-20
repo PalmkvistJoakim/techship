@@ -46,10 +46,48 @@ router.get("/form", async (req, res) => {
       console.log(error);
     });
 });
-
-router.get("/profile", (req, res) => {
+router.get("/form/:id", async (req, res) => {
   const tokenId = req.query.token;
-  const respondentId = req.query.respondentId;
+  const form = req.params.id;
+  const config = {
+    method: "GET",
+    url: `https://api.videoask.com/forms/${form}/contacts?limit=200&offset=0`,
+    headers: {
+      Authorization: `Bearer ${tokenId}`,
+    },
+  };
+  axios(config)
+    .then(function (response) {
+      res.send(response.data.results);
+    })
+    .catch(function (error) {
+      console.log(error);
+    });
+});
+
+router.get("/users/:id", async (req, res) => {
+  const tokenId = req.query.token;
+  const form = req.query.form;
+  const id = req.params.id;
+  const config = {
+    method: "GET",
+    url: `https://api.videoask.com/forms/${form}/contacts/${id}?include_answers=true&all_answers_transcoded=true`,
+    headers: {
+      Authorization: `Bearer ${tokenId}`,
+    },
+  };
+  axios(config)
+    .then(function (response) {
+      res.send(response.data.answers);
+    })
+    .catch(function (error) {
+      console.log(error);
+    });
+});
+
+router.get("/profile/:id", (req, res) => {
+  const tokenId = req.query.token;
+  const respondentId = req.params.id;
   const config = {
     method: "delete",
     url: `https://api.videoask.com/respondents/${respondentId}`,
